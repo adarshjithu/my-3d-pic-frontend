@@ -37,7 +37,7 @@ function Products() {
 
     return (
         <div>
-            {productData.length === 0 ? (
+            {productData?.length === 0 ? (
                 <p>No products found</p> // Handle case when no products are available
             ) : (
                 productData.map((obj: any) => (
