@@ -14,7 +14,8 @@ export const errorHandler = (error: any) => {
     return Promise.reject("An unexpected error occured");
 };
 
-const baseURL = "http://localhost:3000";
+const baseURL = "https://dmt-360.com";
+
 const API = axios.create({
     baseURL: baseURL,
     withCredentials: true,
