@@ -1,6 +1,6 @@
-'use client';
-import Header from "@/Components/User/Header/Header";
+
 import "./globals.css";
+import Header from "@/Components/User/Header/Header";
 
 import Footer from "@/Components/User/Footer/Footer";
 import StateProvider from "@/Components/User/ReduxProvider/StateProvider";
@@ -13,11 +13,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
 
-    const pathname = usePathname(); // Get current pathname
-
-    // Check if the current path starts with "/admin"
-    const isAdminRoute = pathname?.startsWith('/admin');
-    const isPersonalizeRoute = pathname?.startsWith('/personalize');
+   
 
     return (
         <html  >
@@ -34,11 +30,11 @@ export default function RootLayout({
             <body>
                 <Toaster position="top-right" />
                 <StateProvider>
-                { (isPersonalizeRoute||isAdminRoute)?'':<Header />}
-                    {/* { (!isAdminRoute)&&<Header />} */}
+               <Header />
+             
                     <div className="min-h-[500px]">{children}</div>
-                   { (isPersonalizeRoute||isAdminRoute)?'':<Footer />}
-                   {/* { (!isAdminRoute)&&<Footer />} */}
+                  <Footer />
+            
                 </StateProvider>
             </body>
         </html>
