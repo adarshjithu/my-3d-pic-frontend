@@ -4,7 +4,7 @@ import Login from "../Login/Login";
 import Signup from "../Signup/Signup";
 import { useSelector } from "react-redux";
 import { IRootState } from "@/Store/store";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation"; // ✅ Import usePathname
 import ForgetPasswordModal from "../ForgetPassword/page";
 import { getCategories } from "@/Services/userServices";
 import { ICategory } from "@/Interfaces/ICategory";
@@ -13,72 +13,68 @@ export default function Header() {
     const [isSidebarVisible, setIsSidebarVisible] = useState(false);
     const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
     const [signupModal, setSignupModal] = useState(false);
-    const user = useSelector((data: IRootState) => data?.auth?.userData);
     const [forgetPasswordModal, setForgetPasswordModal] = useState(false);
-    const router = useRouter();
     const [categories, setCategories] = useState<ICategory[]>([]);
-
-    // State for managing visibility of dropdown
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
-    const toggleSidebar = () => {
-        setIsSidebarVisible(!isSidebarVisible);
-    };
+    const user = useSelector((state: IRootState) => state?.auth?.userData);
+    const router = useRouter();
+    const pathname = usePathname(); // ✅ Get current pathname
 
-    const toggleLoginModal = () => {
-        setIsLoginModalVisible(!isLoginModalVisible);
-    };
-
-    // Toggle dropdown visibility when "OUR PRODUCTS" is clicked
-    const toggleDropdown = () => {
-        setIsDropdownVisible(!isDropdownVisible);
-    };
+    const toggleSidebar = () => setIsSidebarVisible(!isSidebarVisible);
+    const toggleLoginModal = () => setIsLoginModalVisible(!isLoginModalVisible);
+    const toggleDropdown = () => setIsDropdownVisible(!isDropdownVisible);
 
     useEffect(() => {
         const fetchData = async () => {
             const res = await getCategories();
-            setCategories(res?.data?.data);
+            setCategories(res?.data?.data || []);
         };
         fetchData();
     }, []);
 
+    // ✅ Hide Header on /admin and /personalize routes
+    if (pathname.startsWith("/admin") || pathname.startsWith("/personalize")) {
+        return null;
+    }
+
     return (
         <>
             <header className="bg-[#0C3661] text-white text-xs">
-                <div className="flex items-center justify-between px-6 py-5 md:px-12">
+                <div className=" bg-[red] flex justify-center p-2">
+                    <h2 className="">Mother’s Day Sale | Ships Free $109+</h2>
+                </div>
+                <div className="flex items-center justify-between px-4 py-4 md:px-12">
                     {/* Logo */}
                     <div className="text-lg font-bold">
                         <a href="/" className="text-white hover:text-gray-400">
-                            <img className="w-[70px]" src={'https://crystalcorp.com/my3dpic/wp-content/uploads/2023/12/logo.png'} alt="" />
+                            <img className="w-[70px]" src={"https://crystalcorp.com/my3dpic/wp-content/uploads/2023/12/logo.png"} alt="Logo" />
                         </a>
                     </div>
 
                     {/* Desktop Navigation Links */}
                     <nav className="hidden md:flex space-x-4 text-xs font-medium relative">
-                        <div
-                            className="group relative"
-                            onClick={toggleDropdown} // Toggle dropdown visibility on click
-                        >
+                        <div className="group relative" onClick={toggleDropdown}>
                             <a className="hover:text-gray-400 cursor-pointer ml-6">OUR PRODUCTS</a>
-                            {/* Dropdown Menu */}
                             <div
                                 className={`absolute left-0 top-full bg-[#141414] text-white text-lg shadow-md rounded-lg w-96 h-auto z-[9999] ${
                                     isDropdownVisible ? "block" : "hidden"
                                 }`}
-                                style={{ marginTop: "2rem" }} // Adjusted marginTop to prevent dropdown shift
+                                style={{ marginTop: "2rem" }}
                             >
                                 <ul>
-                                    {categories?.map((obj: ICategory,id:number) => {
-                                        return (
-                                            <li key={id} className="px-8 py-3 hover:bg-gray-800">
-                                                <button  onClick={()=>router.push(`/category/${obj?.name}`)}> {obj?.name}</button>
-                                            </li>
-                                        );
-                                    })}
+                                    {categories?.map((obj: ICategory, id: number) => (
+                                        <li key={id} className="px-8 py-3 hover:bg-gray-800">
+                                            <button onClick={() => router.push(`/category/${obj?.name}`)}>{obj?.name}</button>
+                                        </li>
+                                    ))}
                                 </ul>
                             </div>
                         </div>
 
+                        <a href="/products" className="hover:text-gray-400 ml-6">
+                            OFFERS
+                        </a>
                         <a href="/products" className="hover:text-gray-400 ml-6">
                             ABOUT US
                         </a>
@@ -94,13 +90,23 @@ export default function Header() {
                     </nav>
 
                     {/* Right Section */}
-                    <div className="flex items-center space-x-5">
-                        {/* Search Icon */}
+                    <div className="flex items-center space-x-5 text-[16px]">
+                        {/* Search */}
                         <button className="hover:text-gray-400 ml-3">
                             <i className="fa-solid fa-magnifying-glass"></i>
                         </button>
 
-                        {/* Profile Icon */}
+                        {/* Chat */}
+                        <button className="hover:text-gray-400 ml-3">
+                            <i className="fa-solid fa-comment-dots"></i>
+                        </button>
+
+                        {/* Earth */}
+                        <button className="hover:text-gray-400 ml-3">
+                            <i className="fa-solid fa-earth-americas"></i>
+                        </button>
+
+                        {/* User */}
                         {user ? (
                             <button className="hover:text-gray-400 ml-3" onClick={() => router.push("/profile")}>
                                 <i className="fas fa-user"></i>
@@ -111,16 +117,14 @@ export default function Header() {
                             </button>
                         )}
 
-                        {/* Cart Icon */}
+                        {/* Cart */}
                         <button className="hover:text-gray-400 relative ml-3">
-                            🛒
+                            <i className="fas fa-shopping-cart"></i>
                             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] rounded-full px-1">2</span>
                         </button>
 
-                        {/* Hamburger Menu for Mobile */}
-                        <button className="block md:hidden hover:text-gray-400" onClick={toggleSidebar}>
-                            ☰
-                        </button>
+                        {/* Mobile Menu */}
+                        <button className="block md:hidden hover:text-gray-400 ml-3">☰</button>
                     </div>
                 </div>
             </header>
@@ -131,12 +135,10 @@ export default function Header() {
                     isSidebarVisible ? "translate-x-0" : "-translate-x-full"
                 } transition-transform duration-300 ease-in-out z-50`}
             >
-                {/* Close Button */}
                 <button className="absolute top-4 right-4 text-gray-400 hover:text-white" onClick={toggleSidebar}>
                     ✕
                 </button>
 
-                {/* Sidebar Links */}
                 <nav className="mt-16 flex flex-col space-y-4 px-6 text-xs font-medium">
                     <a href="/specials" className="hover:text-gray-400">
                         OUR PRODUCTS
@@ -156,11 +158,12 @@ export default function Header() {
                 </nav>
             </div>
 
+            {/* Overlay when sidebar is open */}
             {isSidebarVisible && <div className="fixed top-0 left-0 w-full h-full bg-black opacity-50 z-40" onClick={toggleSidebar}></div>}
-            {forgetPasswordModal && <ForgetPasswordModal forgetPasswordModal={forgetPasswordModal} setForgetPasswordModal={setForgetPasswordModal} />}
-            {/* Login Modal */}
-            {signupModal && <Signup setSignupModal={setSignupModal} setIsLoginModalVisible={setIsLoginModalVisible} />}
 
+            {/* Modals */}
+            {forgetPasswordModal && <ForgetPasswordModal forgetPasswordModal={forgetPasswordModal} setForgetPasswordModal={setForgetPasswordModal} />}
+            {signupModal && <Signup setSignupModal={setSignupModal} setIsLoginModalVisible={setIsLoginModalVisible} />}
             {isLoginModalVisible && (
                 <Login
                     forgetPasswordModal={forgetPasswordModal}

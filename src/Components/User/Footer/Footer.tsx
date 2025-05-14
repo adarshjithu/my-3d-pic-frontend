@@ -1,15 +1,23 @@
+"use client";
 import React from "react";
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { usePathname } from "next/navigation"; // ✅ Import usePathname
 
 function Footer() {
+  const pathname = usePathname(); // ✅ Get current pathname
+
+  // ✅ Hide Footer on /admin and /personalize routes
+  if (pathname.startsWith("/admin") || pathname.startsWith("/personalize")) {
+    return null;
+  }
+
   return (
     <div className="bg-[#0C3661] text-white px-6 py-10 md:px-12">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-
         {/* Contact Section */}
         <div className="flex flex-col gap-4">
           <h1 className="text-lg font-semibold">GET IN TOUCH</h1>
-          
+
           <div className="flex items-center gap-3">
             <div className="bg-gray-700 p-2 rounded-full">
               <span role="img" aria-label="phone">📞</span>

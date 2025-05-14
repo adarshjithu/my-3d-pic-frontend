@@ -6,8 +6,7 @@ import Products from "@/Components/User/Products/Products";
 
 export default async function Home() {
     return (
-        <div >
-         
+        <div className="bg-white" >
             <Banner />
             <Products />
             <ProductDetails/>

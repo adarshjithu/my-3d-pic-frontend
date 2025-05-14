@@ -30,6 +30,7 @@ export default function RootLayout({
             <body>
                 <Toaster position="top-right" />
                 <StateProvider>
+                    
                <Header />
              
                     <div className="min-h-[500px]">{children}</div>

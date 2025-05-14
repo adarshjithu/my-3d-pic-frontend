@@ -18,9 +18,16 @@ function Products() {
             setLoading(true); // Ensure it's loading at the start
             try {
                 const res = await getAllProducts();
-                const allProducts = res?.data?.data;
+                let allProducts = res?.data?.data;
+                if (Array.isArray(allProducts)) {
+                    allProducts = [
+                        ...allProducts.filter((item) => item.category !== "Base"),
+                        ...allProducts.filter((item) => item.category === "Base"),
+                    ];
+                }
                 setProductData(allProducts); // Set products when data is available
-                dispatch(setProducts(allProducts)); // Update Redux store if necessary
+                dispatch(setProducts(allProducts));
+                console.log(allProducts); // Update Redux store if necessary
             } catch (error) {
                 console.error("Failed to fetch products", error);
             } finally {
@@ -32,17 +39,15 @@ function Products() {
     }, []);
 
     if (loading) {
-        return <CardSkeletonLoading />; 
+        return <CardSkeletonLoading />;
     }
 
     return (
-        <div>
+        <div className="bg-white">
             {productData?.length === 0 ? (
                 <p>No products found</p> // Handle case when no products are available
             ) : (
-                productData.map((obj: any) => (
-                    <ProductsGrid category={obj?.category} products={obj?.products} key={obj?.category} />
-                ))
+                productData.map((obj: any) => <ProductsGrid category={obj?.category} products={obj?.products} key={obj?.category} />)
             )}
         </div>
     );
