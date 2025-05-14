@@ -11,6 +11,7 @@ const Banner = () => {
     const [isSlide, setIsSlide] = useState(true);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [loading, setLoading] = useState(false);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -46,34 +47,33 @@ const Banner = () => {
     };
 
     return (
-      <div className="w-full h-[300px] lg:h-[500px] relative z-10">
-   {loading ? (
-       <BannerSkeleton />
-   ) : (
-       <div className="relative">
-           <img
-               src={banners[currentIndex]}
-               alt={`Slide ${currentIndex + 1}`}
-               className="w-full h-full object-cover"
-           />
-           {/* Left Arrow */}
-           <button
-               onClick={prevSlide}
-               className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70"
-           >
-               <ChevronLeft size={24} />
-           </button>
-           {/* Right Arrow */}
-           <button
-               onClick={nextSlide}
-               className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70"
-           >
-               <ChevronRight size={24} />
-           </button>
-       </div>
-   )}
-</div>
-
+        <div className="w-full h-[200px] sm:h-[250px] md:h-[350px] lg:h-[500px] relative z-10 overflow-hidden">
+            {loading ? (
+                <BannerSkeleton />
+            ) : (
+                <div className="relative w-full h-full">
+                    <img
+                        src={banners[currentIndex]}
+                        alt={`Slide ${currentIndex + 1}`}
+                        className="w-full h-full object-cover"
+                    />
+                    {/* Left Arrow */}
+                    <button
+                        onClick={prevSlide}
+                        className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-black/50 text-white p-1 sm:p-2 rounded-full hover:bg-black/70"
+                    >
+                        <ChevronLeft size={20} className="sm:size-6" />
+                    </button>
+                    {/* Right Arrow */}
+                    <button
+                        onClick={nextSlide}
+                        className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-black/50 text-white p-1 sm:p-2 rounded-full hover:bg-black/70"
+                    >
+                        <ChevronRight size={20} className="sm:size-6" />
+                    </button>
+                </div>
+            )}
+        </div>
     );
 };
 
